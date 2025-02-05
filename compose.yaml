@@ -9,14 +9,14 @@
 # https://github.com/docker/awesome-compose
 services:
   server:
-    build:
-      context: .
+    container_name: ai-learning
+    build: .
     ports:
-      - 5000:5000
-    develop:
-      watch:
-        - action: rebuild
-          path: .
+      - 5001:5000
+    # develop:
+    #   watch:
+    #     - action: rebuild
+    #       path: .
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
