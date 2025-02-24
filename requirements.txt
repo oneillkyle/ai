@@ -9,3 +9,5 @@ MarkupSafe
 psycopg2-binary
 Werkzeug
 numpy
+Cmake
+tensorflow-datasets
