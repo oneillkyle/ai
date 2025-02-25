@@ -1,4 +1,4 @@
-tensorflow
+tensorflow[and-cuda]
 blinker
 click
 colorama
@@ -11,3 +11,6 @@ Werkzeug
 numpy
 Cmake
 tensorflow-datasets
+tensorrt
+keras-hub
+keras

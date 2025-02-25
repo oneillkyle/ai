@@ -1,16 +1,6 @@
 import keras
 from keras.src.legacy.preprocessing.image import ImageDataGenerator
 
-data = keras.datasets.fashion_mnist
-
-(training_images, training_labels), (test_images, test_labels) = data.load_data()
-
-training_images = training_images.reshape(60000, 28, 28, 1)
-training_images = training_images / 255.0
-test_images = test_images.reshape(10000, 28, 28, 1)
-test_images = test_images / 255.0
-
-
 model = keras.models.Sequential([
     # Note the input shape is the desired size of the image 300x300 with 3 bytes color
     # This is the first convolution
