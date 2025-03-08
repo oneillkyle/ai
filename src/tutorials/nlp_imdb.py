@@ -21,9 +21,9 @@ import string
 #             filtered_sentence = filtered_sentence + word + ' '
 #     imdb_sentences.append(filtered_sentence)
 
-train_data = tfds.as_numpy(tfds.load('imdb_reviews', split='train[:80%]').batch(32).prefetch())
-val_data = tfds.as_numpy(tfds.load('imdb_reviews', split='train[80%:]').batch(32).prefetch())
-test_data = tfds.as_numpy(tfds.load('imdb_reviews', split='test').batch(32).prefetch())
+train_data = tfds.load('imdb_reviews', split='train[:80%]', as_supervised=True).batch(32).prefetch(1000)
+val_data = tfds.load('imdb_reviews', split='train[80%:]').batch(32).prefetch(1000)
+test_data = tfds.load('imdb_reviews', split='test').batch(32).prefetch(1000)
 
 vectorize_layer = keras.layers.TextVectorization(
     max_tokens=100,
