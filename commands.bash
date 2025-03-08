@@ -8,3 +8,5 @@ docker run -it --rm -v $PWD:/tmp -w /tmp tensorflow/tensorflow python ./script.p
 
 # For virtual env
 source /Library/Frameworks/Python.framework/Versions/3.11/bin/virtualenvwrapper.sh 
+
+source ~/.storevirtualenvs/ai/bin/activate

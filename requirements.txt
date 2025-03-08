@@ -14,3 +14,4 @@ tensorflow-datasets
 tensorrt
 keras-hub
 keras
+beautifulsoup4
