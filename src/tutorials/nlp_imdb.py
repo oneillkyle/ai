@@ -21,9 +21,9 @@ import string
 #             filtered_sentence = filtered_sentence + word + ' '
 #     imdb_sentences.append(filtered_sentence)
 
-train_data = tfds.as_numpy(tfds.load('imdb_reviews', split='train[:80%]'))
-val_data = tfds.as_numpy(tfds.load('imdb_reviews', split='train[80%:]'))
-test_data = tfds.as_numpy(tfds.load('imdb_reviews', split='test'))
+train_data = tfds.as_numpy(tfds.load('imdb_reviews', split='train[:80%]').batch(32).prefetch())
+val_data = tfds.as_numpy(tfds.load('imdb_reviews', split='train[80%:]').batch(32).prefetch())
+test_data = tfds.as_numpy(tfds.load('imdb_reviews', split='test').batch(32).prefetch())
 
 vectorize_layer = keras.layers.TextVectorization(
     max_tokens=100,
@@ -69,15 +69,3 @@ print('Vocabulary size: {}'.format(len(vectorize_layer.get_vocabulary())))
 train_ds = train_data.map(vectorize_text)
 val_ds = val_data.map(vectorize_text)
 test_ds = test_data.map(vectorize_text)
-# vectorize_layer.adapt(imdb_sentences)
-
-# vectorize_layer.get_vocabulary()
-
-# sentences_to_tokens = vectorize_layer([
-#     'i love tensorflow',
-#     'i love playing with this'
-# ])
-
-# string_lookup = keras.layers.StringLookup(
-#     vocabulary=vectorize_layer.get_vocabulary(include_special_tokens=False), invert=True)
-# string_lookup(sentences_to_tokens - 1)
