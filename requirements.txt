@@ -12,6 +12,6 @@ numpy
 Cmake
 tensorflow-datasets
 tensorrt
-keras-hub
 keras
 beautifulsoup4
+tensorflow-hub
