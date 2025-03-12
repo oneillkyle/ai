@@ -22,21 +22,15 @@ from bs4 import BeautifulSoup
 #             filtered_sentence = filtered_sentence + word + ' '
 #     imdb_sentences.append(filtered_sentence)
 
-# def custom_standardization(input_data):
-#     lowercase = tf.strings.lower(input_data)
-#     stripped_html = tf.strings.regex_replace(lowercase, '<br />', ' ')
-#     return tf.strings.regex_replace(stripped_html,
-#                                     '[%s]' % re.escape(string.punctuation),
-#                                     '')
+def custom_standardization(input_data):
+    lowercase = tf.strings.lower(input_data)
+    stripped_html = tf.strings.regex_replace(lowercase, '<br />', ' ')
+    return tf.strings.regex_replace(stripped_html,
+                                    '[%s]' % re.escape(string.punctuation),
+                                    '')
 
 
-# max_features = 10000
-# sequence_length = 250
-# vectorize_layer = keras.layers.TextVectorization(
-#     standardize=custom_standardization,
-#     max_tokens=max_features,
-#     output_mode='int',
-#     output_sequence_length=sequence_length)
+
 
 # vectorize_layer = keras.layers.TextVectorization(
 #     max_tokens=100,
@@ -44,8 +38,7 @@ from bs4 import BeautifulSoup
 #     output_sequence_length=3
 # )
 
-# train_text = train_data.map(lambda x, y: x)
-# vectorize_layer.adapt(train_text)
+
 
 
 # def vectorize_text(text, label):
@@ -71,18 +64,29 @@ train_data, validation_data, test_data = tfds.load(
     split=('train[:60%]', 'train[60%:]', 'test'),
     as_supervised=True)
 
-train_examples_batch, train_labels_batch = next(iter(train_data.batch(10)))
-train_examples_batch
-train_labels_batch
+# train_examples_batch, train_labels_batch = next(iter(train_data.batch(10)))
 
-embedding = "https://tfhub.dev/google/nnlm-en-dim50/2"
-hub_layer = hub.KerasLayer(embedding, input_shape=[],
-                           dtype=tf.string, trainable=True)
-hub_layer(train_examples_batch[:3])
-hub_layer_wrapper = keras.layers.Lambda(lambda x: hub_layer(x))
+# embedding = "https://tfhub.dev/google/nnlm-en-dim50/2"
+# hub_layer = hub.KerasLayer(embedding, input_shape=[],
+#                            dtype=tf.string, trainable=True)
+# hub_layer(train_examples_batch[:3])
+# hub_layer_wrapper = keras.layers.Lambda(lambda x: hub_layer(x))
+
+vocab_size = 6000
+sequence_length = 250
+vectorize_layer = keras.layers.TextVectorization(
+    standardize=custom_standardization,
+    max_tokens=vocab_size,
+    output_mode='int',
+    output_sequence_length=sequence_length)
+
+train_text = train_data.map(lambda x, y: x)
+vectorize_layer.adapt(train_text)
 
 model = keras.Sequential()
-model.add(hub_layer_wrapper)
+model.add(vectorize_layer)
+model.add(keras.layers.Embedding(6000, 16))
+model.add(keras.layers.GlobalAveragePooling1D())
 model.add(keras.layers.Dense(16, activation='relu'))
 model.add(keras.layers.Dense(1))
 
@@ -90,7 +94,7 @@ model.compile(optimizer='adam',
               loss=keras.losses.BinaryCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
-history = model.fit(train_data.shuffle(10000).batch(512),
+history = model.fit(train_data,
                     epochs=10,
                     validation_data=validation_data.batch(512),
                     verbose=1)
