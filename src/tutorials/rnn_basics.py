@@ -9,11 +9,11 @@ def vectorize_text(text, label):
 # Load data
 train_data, validation_data, test_data = tfds.load(
     name="imdb_reviews",
-    split=('train[:80%]', 'train[80%:]', 'test'),
+    split=('train[:10%]', 'train[10%:20%]', 'test'),
     as_supervised=True)
 
 # Define parameters
-vocab_size = 2500
+vocab_size = len(train_data)
 sequence_length = 250
 
 # Vectorization layer
@@ -48,7 +48,7 @@ optimizer = keras.optimizers.Adam(learning_rate=0.000008, beta_1=0.9, beta_2=0.9
 
 # Compile the model
 model.compile(optimizer=optimizer,
-              loss=keras.losses.BinaryCrossentropy(from_logits=True),
+              loss=keras.losses.BinaryCrossentropy(from_logits=False),
               metrics=['accuracy'])
 
 # Train the model

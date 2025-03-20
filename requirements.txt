@@ -15,3 +15,5 @@ tensorrt
 keras
 beautifulsoup4
 tensorflow-hub
+matplotlib
+PyQt6
