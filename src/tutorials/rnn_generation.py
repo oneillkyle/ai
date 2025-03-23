@@ -14,7 +14,7 @@ text = open(path_to_file, 'rb').read().decode(encoding='utf-8')
 print(f'Length of text: {len(text)} characters')
 
 # Take a look at the first 250 characters in text
-print(text[:250])
+# print(text[:250])
 
 # The unique characters in the file
 vocab = sorted(set(text))
@@ -44,18 +44,18 @@ all_ids
 
 ids_dataset = tf.data.Dataset.from_tensor_slices(all_ids)
 
-for ids in ids_dataset.take(10):
-    print(chars_from_ids(ids).numpy().decode('utf-8'))
+# for ids in ids_dataset.take(10):
+#     print(chars_from_ids(ids).numpy().decode('utf-8'))
 
 seq_length = 100
 
 sequences = ids_dataset.batch(seq_length+1, drop_remainder=True)
 
-for seq in sequences.take(1):
-    print(chars_from_ids(seq))
+# for seq in sequences.take(1):
+#     print(chars_from_ids(seq))
 
-for seq in sequences.take(5):
-    print(text_from_ids(seq).numpy())
+# for seq in sequences.take(5):
+#     print(text_from_ids(seq).numpy())
 
 
 def split_input_target(sequence):
@@ -66,9 +66,9 @@ def split_input_target(sequence):
 
 dataset = sequences.map(split_input_target)
 
-for input_example, target_example in dataset.take(1):
-    print("Input :", text_from_ids(input_example).numpy())
-    print("Target:", text_from_ids(target_example).numpy())
+# for input_example, target_example in dataset.take(1):
+#     print("Input :", text_from_ids(input_example).numpy())
+#     print("Target:", text_from_ids(target_example).numpy())
 
 # Batch size
 BATCH_SIZE = 64
@@ -127,7 +127,7 @@ model = keras.Sequential([
     keras.layers.Embedding(vocab_size, embedding_dim),
     keras.layers.Bidirectional(keras.layers.LSTM(
         embedding_dim, return_sequences=True, dropout=0.2)),
-    keras.layers.Bidirectional(keras.layers.LSTM(embedding_dim, dropout=0.2)),
+    keras.layers.Bidirectional(keras.layers.LSTM(embedding_dim, dropout=0.2, return_sequences=True)),
     keras.layers.Dense(vocab_size)
 ])
 
@@ -140,6 +140,7 @@ for input_example_batch, target_example_batch in dataset.take(1):
     example_batch_predictions = model(input_example_batch)
     print("Prediction shape:", example_batch_predictions.shape)
     print("Target shape:", target_example_batch.shape)
+    print("Input shape:", input_example_batch.shape)
 
 # sampled_indices = tf.random.categorical(
 #     example_batch_predictions[0], num_samples=1)
