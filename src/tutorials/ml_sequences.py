@@ -65,7 +65,33 @@ shuffle_buffer_size = 1000
 dataset = windowed_dataset(
     x_train, window_size, batch_size, shuffle_buffer_size)
 
-plt.figure(figsize=(12, 6))
-plot_series(time, series)
+
+model = keras.models.Sequential([
+    keras.layers.Dense(10, input_shape=[window_size], activation='relu'),
+    keras.layers.Dense(10, activation='relu'),
+    keras.layers.Dense(1)
+])
+
+model.compile(loss='mse', optimizer=keras.optimizers.SGD(
+    learning_rate=1e-6, momentum=0.9))
+
+model.fit(dataset, epochs=100, verbose=1)
+
+model.summary()
+
+forecast = []
+for time in range(len(series) - window_size):
+    forecast.append(
+        model.predict(series[time: time + window_size][np.newaxis])
+    )
+
+forecast = forecast[split_time-window_size:]
+results = np.array(forecast)[:, 0, 0]
+
+keras.metrics.mean_absolute_error(x_valid, results).numpy()
+
+plt.figure(figsize=(10, 6))
+plot_series(time_valid, x_valid)
+plot_series(time_valid, results)
 plt.tight_layout()
 plt.show()
