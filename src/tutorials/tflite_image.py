@@ -5,20 +5,28 @@ import tensorflow as tf
 import tensorflow_hub as hub
 import tensorflow_datasets as tfds
 
-
-def format_image(image, label):
-    image = tf.image.resize(image, IMAGE_SIZE) / 255.0
-    return image, label
+version_fn = getattr(keras, "version", None)
+if version_fn and version_fn().startswith("3."):
+  import tf_keras as keras
+else:
+  import keras
 
 
 (raw_train, raw_validation, raw_test), metadata = tfds.load(
     'cats_vs_dogs',
     split=['train[:80%]', 'train[80%:90%]', 'train[90%:]'],
     with_info=True,
-    as_supervised=True,)
+    as_supervised=True,)  # type: ignore
+
+
+def format_image(image, label):
+    IMAGE_SIZE = [224, 224]  # should get this dynamically
+    image = tf.image.resize(image, IMAGE_SIZE) / 255.0  # type: ignore
+    return image, label
+
 
 num_examples = metadata.splits['train'].num_examples
-num_classes = metadata.features['label'].num_classes
+num_classes = metadata.features['label'].num_classes  # type: ignore
 print(num_examples)
 print(num_classes)
 
