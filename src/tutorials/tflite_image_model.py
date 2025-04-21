@@ -7,9 +7,9 @@ import tensorflow_datasets as tfds
 
 version_fn = getattr(keras, "version", None)
 if version_fn and version_fn().startswith("3."):
-  import tf_keras as keras
+    import tf_keras as keras
 else:
-  import keras
+    import keras
 
 
 (raw_train, raw_validation, raw_test), metadata = tfds.load(
@@ -54,5 +54,13 @@ model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 hist = model.fit(train_batches, epochs=5, validation_data=validation_batches)
 
-CATS_VS_DOGS_SAVED_MODEL = "src/models/exp_saved_model"
+CATS_VS_DOGS_SAVED_MODEL = "src/models/cats_dogs_model"
 tf.saved_model.save(model, CATS_VS_DOGS_SAVED_MODEL)
+
+converter = tf.lite.TFLiteConverter.from_saved_model(CATS_VS_DOGS_SAVED_MODEL)
+tflite_model = converter.convert()
+tflite_model_file = '{}/converted_model.tflite'.format(
+    CATS_VS_DOGS_SAVED_MODEL)
+
+with open(tflite_model_file, 'wb') as f:
+    f.write(tflite_model)

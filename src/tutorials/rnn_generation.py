@@ -161,7 +161,7 @@ loss = tf.losses.SparseCategoricalCrossentropy(from_logits=True)
 # tf.exp(example_batch_mean_loss).numpy()
 
 # Directory where the checkpoints will be saved
-checkpoint_dir = './training_checkpoints'
+checkpoint_dir = 'src/training_checkpoints'
 # Name of the checkpoint files
 checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt_{epoch}.weights.h5")
 

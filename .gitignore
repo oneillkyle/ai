@@ -163,4 +163,5 @@ cython_debug/
 #.idea/
 
 src/datasets/*
-training_checkpoints
+src/models/*
+src/training_checkpoints/*
